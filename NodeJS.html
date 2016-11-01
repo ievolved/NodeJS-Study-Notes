@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Shawn Bullock's NodeJS Study Notes</title>
+		<style>
+			/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+sup {
+   vertical-align: super;
+   font-size: smaller;
+}
+
+sub {
+  vertical-align: sub;
+  font-size: smaller;
+}
+
+/* Generic styles */
+body {
+	background: #f5f5f5;
+  color: #222;
+  font-family: 'Palatino Linotype','Book Antiqua',Palatino,FreeSerif,serif;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6,
+ul, ol,
+p,
+code, pre,
+hr {
+	line-height: 1.5em;
+	margin: 1.5em 0 0.5em 0;
+}
+
+*:first-child {
+	margin-top: 0;
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+	font-weight: bold;
+}
+
+h1 {
+	font-size: 3.5em;
+}
+
+h2 {
+	font-size: 2.5em;
+}
+
+h3 {
+	font-size: 2em;
+}
+
+h4 {
+	font-size: 1.5em
+}
+
+h5 {
+	font-size: 1.2em;
+}
+
+h6 {
+	font-size: 1em;
+}
+
+/* Lists */
+ul, ol {
+	padding-left: 2em;
+}
+
+ul {
+	list-style-type: disc;	
+}
+
+ol {
+	list-style-type: decimal;
+}
+
+/* Code and pre */
+code, pre {
+	font-family: "Bitstream Vera Sans Mono", "Courier", monospace;
+}
+code {
+	background: none repeat scroll 0 0 #F8F8FF;
+  border: 1px solid #DEDEDE;
+  border-radius: 3px 	;
+  padding: 0 0.2em;
+}
+pre {
+	border-left: 5px solid #eee;
+	margin-left: 2em;	
+	padding-left: 1em;
+}
+pre > code {
+	background: transparent;
+	border: none;
+	padding: 0;
+}
+
+/* Links */
+a {
+  color: #261A3B;
+}
+
+a:visited {
+  color: #261A3B;
+}
+
+/* Inlines */
+strong {
+	font-weight: bold;
+}
+
+em {
+	font-style: italic;
+}
+
+/* Container */
+.container {
+	background: #FFF;
+	padding: 30px 50px;
+	margin: 0 auto;
+	width: 850px;
+}
+
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1 id="shawn-bullock-s-nodejs-study-notes">Shawn Bullock&#39;s NodeJS Study Notes</h1>
+<h5 id="-version-11-1-2016-1-">(Version 11.1.2016:1)</h5>
+<h2 id="introduction">Introduction</h2>
+<p>The following is a rendition of my own personal study notes about Node.JS that I have decided to share with you. While I attempt to cover all the basics I make no attempt to be thorough.  I have removed some of the best parts and, in true mentorship spirit, reframed them in the form of a question or exercise that you can followup on.</p>
+<p>NOTE: Words in <strong>Bold</strong> are defined at the bottom of this document beneath the Dictionary header.  Some words are in <em>italic</em>.  These words are defined at their first use.</p>
+<h2 id="overview">Overview</h2>
+<p><strong>NodeJS</strong> or (<strong>Node.js</strong>) is an <strong>asynchronous</strong> <strong>event-driven</strong> javascript platform based on Google&#39;s <strong>V8</strong> engine.  <strong>NodeJS</strong> is not a <strong>Web Server</strong> or anything else, specifically.  It is just a Javascript environment that can do anything you want it to do.  It is often used to create a <strong>Web Server</strong> or <strong>REST</strong> server via <strong>Express.js</strong>, but it can also be used to create system utilities, file processors, and more.  Any of which may or may not have anything to do with the Internet.</p>
+<p>All <strong>Web Browsers</strong> support some form of Javascript.  Google&#39;s Chrome also uses the <strong>V8</strong> engine.  When executing Javascript in a <strong>Web Browser</strong> the code has access to the <strong>HTML DOM</strong>.  When executing code within <strong>NodeJS</strong> there is no <strong>HTML DOM</strong>.  Not all Javascript code can execute without modification in both environments (even though a proclaimed benefit of using <strong>NodeJS</strong> is the ability to share code between the <strong>NodeJS</strong> on the <strong>server</strong> and the <strong>Web Browser</strong>).</p>
+<p>The code that runs within a <strong>NodeJS</strong> instance is called a <strong>NodeJS Application</strong> (I call it a <em>Node App</em>).  <strong>NodeJS</strong> is single-threaded.  This means that each <em>Node app</em> can only process one <strong>event</strong> simultaneously, even though it appears to be servicing potentially 100&#39;s of 1000&#39;s of <strong>events</strong> at a time.</p>
+<p>A <strong>NodeJS</strong> <em>project</em> is the collection of files that comprise the <em>Node app</em>.</p>
+<p><strong>NodeJS</strong> is very efficient when processing non-blocking (<strong>asynchronous</strong>) (doing something else while waiting) IO (tasks).  IO: file operations, database operations, <em>HTTP</em> operations, network communications (sockets), etc., can be very time consuming.  Rather than blocking (waiting) for such operations to complete, <strong>NodeJS</strong> offloads such tasks to the background until completed.  Once completed, via a callback, processing resumes within the <strong>NodeJS</strong> environment.  There are other kinds of tasks that are very intensive, such as image processing, AI, sound compression, etc., that <strong>NodeJS</strong> is not good at processing.  Such tasks should be handled by another type of server more specialized to the purpose.</p>
+<h5 id="exercises">Exercises</h5>
+<ul>
+<li>Does jQuery work on <strong>NodeJS</strong>?  Why or why not?</li>
+</ul>
+<h2 id="launching-a-_node-app_">Launching a <em>Node app</em></h2>
+<p>Many <strong>NodeJS</strong> applications use file names such as <code>app.js</code>, <code>server.js</code>, or even <code>basic-server.js</code> as the main file and starting point.  It can be named anything.  I choose to use <code>server.js</code> for all my projects, and others tend to use something else such as <code>basic-server.js</code>, <code>app.js</code>, etc. for theirs.</p>
+<p>To start a <em>Node app</em>, simply type:</p>
+<p><code>node &lt;filename.js&gt;</code></p>
+<p>Or</p>
+<p><code>node &lt;path/to/&lt;filename.js&gt;</code> at the command line.</p>
+<p>You will, of course, have to start the <em>Node app</em> after every change.  There is a utility called <code>nodemon</code> that can launch your <em>Node app</em> that will automatically restart after each save.</p>
+<h5 id="exercises">Exercises</h5>
+<ul>
+<li>What does <code>npm start</code> do?</li>
+</ul>
+<h2 id="nodejs-packages">NodeJS Packages</h2>
+<p>It is not productive to create everything from scratch.  To increase productivity, <strong>NodeJS</strong> provides a mechanism to re-use previously written code.  Such code is called a <strong>package</strong>.  <strong>Packages</strong> can be installed via a commandline utility called <strong>NPM</strong>.</p>
+<p><strong>Packages</strong> can be installed either <em>Global</em> or <em>local</em>.  <em>Global</em> <strong>packages</strong> are installed on the machine and can be used from the commandline or by all <em>Node apps</em> from that single installation.  <em>Local</em> <strong>packages</strong> are installed with each <em>Node app</em> and cannot be used by other <em>Node apps</em>.</p>
+<p>When a <em>Node app</em> usees a <strong>package</strong>, it is called a <em>dependency</em>.  This means that the <em>Node app</em> <em>depends</em> on the <strong>package</strong> in order to function properly.  <strong>Packages</strong> can also use other <strong>packages</strong> as <em>dependencies</em>.  <strong>Packages</strong> have <em>version numbers</em>.  A <em>version number</em> indicates a specific iteration of code or features that the <strong>package</strong> supports.  When a <em>Node app</em> <em>depends</em> on a specific <em>version</em> of a <strong>package</strong>, it avoids potentional problems and <em>conflicts</em> that might arise if there was no <em>versioning</em> in place.  A <em>conflict</em> is when the <em>Node app</em> expects a certain feature or behavior that does not exist, or behaves differently than expected.</p>
+<h5 id="to-install-a-package-">To install a package:</h5>
+<p><strong>NodeJS</strong> provides a utility called <code>npm</code> that manages <strong>packages</strong>.  With it you can install and remove <strong>packages</strong> easily.</p>
+<p>Each application should have a <code>package.json</code> file in its root directory.  This file does not exist by default and must be created.  To create it, simply type:</p>
+<p><code>npm init</code> at the application root directory and follow the prompts.  To add a <strong>NodeJS</strong> package, simply type:</p>
+<p><code>npm install &lt;name&gt; --save</code> at the application root directory.</p>
+<p>You can also remove a package via:</p>
+<p><code>npm remove &lt;name&gt;</code> at the application root directory.</p>
+<p>When you get a <em>project</em> from github the first time, it will usually contain the <code>package.json</code> file already.  But the <strong>packages</strong> will usually not be included with the git repository.  The <strong>packages</strong> will be listed in the <code>package.json</code> file.  To install all the <strong>package</strong> dependencies, simply type:</p>
+<p><code>npm intall</code> at the application root directory.</p>
+<p>Some <strong>packages</strong> will behave more like applications and others more like functionality for YOUR <em>Node app</em>.  Those that behave more like applications (or utilities) must be installed <em>globally</em> and those that provide functionality as a part of YOUR <em>Node app</em> must be installed <em>locally</em>.  To install a <em>global</em> <strong>package</strong>, simply type:</p>
+<p><code>npm install -g &lt;name&gt;</code> anywhere.</p>
+<h5 id="exercises-">Exercises:</h5>
+<ul>
+<li>Create a new <em>Node app</em>.  Add a <code>package.json</code> file</li>
+<li>What is the purpose of the <code>main</code> key/value in the <code>package.json</code> file?</li>
+<li>Install at least one <strong>package</strong> to the <em>project</em></li>
+<li>What happens if you omit <code>--save</code> when installing a <strong>package</strong>?</li>
+<li>Install at least one <strong>package</strong> that is specific to the dev dependencies (HINT: testing usually will be dev specific (as in development, vs deployed to the end users and ready to use))</li>
+<li>Remove at least one <strong>package</strong> from the <em>project</em><ul>
+<li>Validate that <code>package.json</code> reflects the change.  If not, figure out why and try again</li>
+</ul>
+</li>
+<li>Install a specific <em>version</em> of a package to the <em>project</em></li>
+<li>What directory does NPM install <em>local</em> <strong>packages</strong> to?</li>
+<li>What happens if you install a <strong>package</strong> at a different directory level than the application root directory?</li>
+<li>How can you avoid uploading <strong>package</strong> files to github?  (HINT: git.ignore... but how, specifically?)</li>
+<li>Install a <em>global</em> package (<code>Nodemon</code>??)</li>
+<li>Can a <em>global</em> <strong>package</strong> be a <em>dependency</em> to your <em>Node app</em>?  Explain why or why not?</li>
+<li>Launch your <strong>NodeJS</strong> app using the dev configuration.</li>
+</ul>
+<h2 id="modules">Modules</h2>
+<p>A <strong>module</strong> is a code file in <strong>NodeJS</strong>.  Sometimes when people refer to a <strong>package</strong> they call it a <strong>module</strong>.  A .js file in <strong>NodeJS</strong> has a one-to-one correspondence to a <strong>module</strong>.  A <strong>package</strong>, on the other hand, is comprised of one ore more <strong>modules</strong>.  A <em>Node app</em> is also comprised of one or more <strong>modules</strong> and may or may not depend on one or more <strong>packages</strong>.  However, when <code>require(...)</code>ing a <strong>package</strong> we may simply refer to it as a <strong>module</strong>.</p>
+<p>To define a <strong>module</strong> just add a new .js file to the <em>project</em>.  If you are familiar with the <strong>Web Browser</strong> you might recall using something like <code>&lt;SCRIPT SRC=&quot;file.js&quot;&gt;&lt;/SCRIPT&gt;</code> to load a Javascript file into the Web page (where <code>&quot;file.js&quot;</code> is any valid URL path).  That <code>file.js</code> is not technically the same thing as a <strong>module</strong> but the larger idea is similar.  In <strong>NodeJS</strong>, to use a <strong>module</strong>, the file that wishes to use it must <em>reference</em> it thus:</p>
+<p><code>var file = require(&quot;./file.js&quot;);</code> (where <code>&quot;./file.js&quot;</code> is any valid file system path)</p>
+<p>To declare a <strong>module</strong>, simply write any valid Javascript code in a .js file within the <strong>NodeJS</strong> <em>project</em>.  All functions and variables will be private (not visiable to other <strong>modules</strong>) by default.  To make anything visible to other parts of the <em>Node app</em>, you must <em>export</em> it thus:</p>
+<h6 id="-file-circle-js-">[file <code>&quot;circle.js&quot;</code>]</h6>
+<pre><code class="lang-javascript">var PI = Math.PI;
+exports.area = function(r) {
+  return PI * r * r;
+};
+exports.circumference = function(r) {
+  return 2 * PI * r;
+};
+</code></pre>
+<p>In the above example, <code>var PI = Math.PI;</code> will not be visible to any other parts of the <em>Node app</em>.  However, the functions <code>area(...)</code> and <code>circumference(...)</code> wil be.</p>
+<p>To use them elsewhere, simply type:</p>
+<h5 id="-file-foo-js-">[file <code>&quot;foo.js&quot;</code>]</h5>
+<pre><code class="lang-javascript">var circle = require(&quot;./circle.js&quot;);
+console.log(&quot;The area of a circle of radius 4 is &quot; + circle.area(4));
+console.log(&quot;The circumference of a circle of radius 4 is &quot; + circle.circumference(4));
+</code></pre>
+<p>You can also write:</p>
+<h5 id="-file-foo-js-">[file <code>&quot;foo.js&quot;</code>]</h5>
+<pre><code class="lang-javascript">var area = require(&quot;./circle.js&quot;).area;
+var circumference = require(&quot;.circle.js&quot;).circumference;
+console.log(&quot;The area of a circle of radius 4 is &quot; + area(4));
+console.log(&quot;The circumference of a circle of radius 4 is &quot; + circumference(4));
+</code></pre>
+<p>Why the two different ways?  In the first example <code>circle</code> can be used to access <em>any</em> member of the <code>circle.js</code> <strong>module</strong>.  The second example shows a way to reference and use only specific members of the <code>circle.js</code> module.  Both are valid use cases and it is up to you which style to prefer.</p>
+<p>There are actually two ways to export a module:</p>
+<p><code>exports.&lt;member&gt; = ...</code></p>
+<p>and</p>
+<p><code>module.exports.&lt;member&gt; = ...</code></p>
+<p>Both will achieve the same thing but should be used consistently throughout your <em>Node app</em>.</p>
+<h5 id="exercises">Exercises</h5>
+<ul>
+<li>What is the difference between URL and a file system path? Why use one for <code>&lt;SCRIPT&gt;</code> tags and another for <code>require(...)</code> statements?</li>
+<li>What is the technical difference between the <code>exports.&lt;member&gt;</code> pattern and the <code>module.exports.&lt;member&gt;</code> pattern? (HINT: <a href="http://www.sitepoint.com/understanding-module-exports-exports-node-js/">A good explanation</a>).  Why would you choose one over the other?</li>
+<li>Create a <strong>module</strong> and export a few functions or variables.  Use them from another part of your <em>Node app</em>.<ul>
+<li>Create another <strong>module</strong> using a different export pattern and use it from another part of your <em>Node app</em>.  Are there any differences?</li>
+</ul>
+</li>
+<li>What happens if you <code>require(&quot;&lt;url&gt;&quot;);</code> instead of <code>require(&lt;file system path&gt;);</code>?</li>
+</ul>
+<h2 id="http">HTTP</h2>
+<p>NOTE: This section is important to understand before continuing on to creating HTTP servers with <strong>NodeJS</strong>.  Be familiar with the Postman Chrome extension before continuing, it will make your life easier.</p>
+<p>Read the following sections from <a href="https://www3.ntu.edu.sg/home/ehchua/programming/webprogramming/HTTP_Basics.html">HTTP Basics</a> at a minimum before continuing (skip any other section for now):</p>
+<ol>
+<li>The Web</li>
+<li>HyperText Transfer Protocol (HTTP)</li>
+<li>Browser</li>
+<li>Uniform Resource Locator (URL)</li>
+<li>HTTP Protocol</li>
+<li>HTTP Specifications</li>
+<li>HTTP Request and Response Messages</li>
+<li>HTTP Request Method</li>
+<li>HTTP Response Method</li>
+<li>HTTP Request Methods</li>
+<li>Submitting HTML Form Data and Questy String</li>
+<li>URL and URI</li>
+</ol>
+<p>The other parts of the page are useful for your general understanding but not critical for understanding the rest of this study guide.</p>
+<h2 id="processing-http-requests-with-nodejs">Processing HTTP Requests with NodeJS</h2>
+<p><strong>NodeJS</strong> has many <strong>modules</strong> built in.  Among them is the <code>&quot;HTTP&quot;</code> module.  This allows you to start an instance of an HTTP server and handle requests.  To do so is simple, simply type:</p>
+<pre><code class="lang-javascript">var http = require(&quot;http&quot;);
+var server = http.createServer(function(request, response) {
+    // ...
+});
+var port = 8080;
+server.listen(port);
+</code></pre>
+<p>All HTTP requests have at least a <em>request</em> and a <em>response</em>.  The code above aptly names the arguments such, but sometimes you&#39;ll see <code>function(req, res)</code>.  It doesn&#39;t matter what they&#39;re called.  I prefer to be very precise.  A <em>request</em> contains information from the client and hints about how to process that <em>request</em>.  A <em>response</em> contains information from the <em>Node app</em> that the client will need to continue properly.  There are two fundamental pieces of data contained within each <em>request</em>:</p>
+<ol>
+<li><code>request.method</code>: specifies what <em>HTTP</em> method to use (GET, POST, UPDATE, DELETE, OPTIONS, etc.).</li>
+<li><code>request.url</code>: the HTTP URI path that the <em>client</em> desires.</li>
+</ol>
+<p>There are two other important pieces of data that you can use:</p>
+<ol>
+<li><code>request.headers</code>: lists all HTTP headers included as part of the request</li>
+<li>BODY: this isn&#39;t a property per se, but a request may include data.  This data is called a BODY.</li>
+</ol>
+<p>All HTTP responses should end in a consistent state.  This means, at the very least, if nothing else, with a suitable status code.  <code>response.end();</code> will end the response stream with a default status code.</p>
+<pre><code class="lang-javascript">var http = require(&quot;http&quot;);
+var server = http.createServer(function(request, response) {
+    response.end();
+});
+var port = 8080;
+server.listen(port);
+</code></pre>
+<p>To be more useful than the above, we will need handle the <em>HTTP</em> method accordingly:</p>
+<pre><code class="lang-javascript">var http = require(&quot;http&quot;);
+var server = http.createServer(function(request, response) {
+    if (request.method === &quot;GET&quot;) {
+        // process GET request...
+    }
+
+    else if (request.method === &quot;POST&quot;) {
+        // process POST request...
+    }
+
+    else {
+        // not prepared to handle the request.method, respond with appropriate error
+    }
+});
+var port = 8080;
+server.listen(port);
+</code></pre>
+<p>To be even more useful yet, we can handle individual URLs thus:</p>
+<pre><code class="lang-javascript">var http = require(&quot;http&quot;);
+var server = http.createServer(function(request, response) {
+    if (request.method === &quot;GET&quot;) {
+        if (request.url === &quot;&lt;url1&gt;&quot;) {
+            // process &lt;url1&gt;...
+            // status OK (unless its not)
+        }
+        else if (request.url === &quot;&lt;url2&gt;&quot;) {
+            // process &lt;url2&gt;...
+            // status OK (unless its not)
+        }
+        else {
+            /// respond with appropriate error
+        }
+    }
+
+    else if (request.method === &quot;POST&quot;) {
+        if (request.url === &quot;&lt;url1&gt;&quot;) {
+            // process &lt;url1&gt;...
+            // status OK (unless its not)
+        }
+        else if (request.url === &quot;&lt;url2&gt;&quot;) {
+            // process &lt;url2&gt;...
+            // status OK (unless its not)
+        }
+        else {
+            /// respond with appropriate error
+        }
+    }
+
+    else {
+        // not prepared to handle the request.method, respond with appropriate error
+    }
+});
+var port = 8080;
+server.listen(port);
+</code></pre>
+<p>Please note all the different places where we respond with an appropriate error above.</p>
+<p>The <code>request.url</code> property returns the URL.  But sometimes we might want specific information about it.  <strong>NodeJS</strong> includes the <code>url</code> <strong>module</strong>.  For more information, visit the <a href="https://nodejs.org/docs/latest/api/url.html">official documentation</a>.  To use:</p>
+<pre><code class="lang-javascript">var http = require(&quot;http&quot;);
+var url = require(&quot;url&quot;);
+var server = http.createServer(function(request, response) {
+    var uri = url.parse(request.url).pathname;
+    // ...
+});
+var port = 8080;
+server.listen(port);
+</code></pre>
+<p>It is often useful for the <em>client</em> to send data with a <em>request</em>.  One way is via the SUBMIT button on a form.  This will submit the form data with the <em>request</em> (see the serversideconcepts.demo project to see this in action).  Another way is to attach raw data.</p>
+<p>Some programming languages, like Java or C#, provide a property that automatically parses and returns the <em>request</em> BODY.  <strong>NodeJS</strong> does not.  To do so, we have to parse it ourselves, thus:</p>
+<pre><code class="lang-javascript">//...
+function collectData(request, callback) {
+    var data = &quot;&quot;;
+
+    request.on(&quot;data&quot;, function(chunk) {
+        data += chunk;
+    });
+
+    request.on(&quot;end&quot;, function() {
+        callback(data);
+    })
+};
+//...
+</code></pre>
+<p>As data fragments arrive, called <code>chunk</code> in the above example, we keep adding it to another variable called <code>data</code> until complete.  The format of data can be anything the <em>client</em> sends (XML, form data, JSON, TEXT, BINARY, etc.).</p>
+<p>Suppose a user submits a form.  The <em>client</em> will POST a <em>request</em> using form data.  HTML form data resembles a querystring (visit <a href="https://en.wikipedia.org/wiki/Query_string">Wikipedia</a> for more information about the Querystring).  The following example demonstrates parsing form data:</p>
+<pre><code class="lang-javascript">var querystring = require(&quot;querystring&quot;);
+var http = require(&quot;http&quot;);
+var url = require(&quot;url&quot;);
+var server = http.createServer(function(request, response) {
+    if (request.method === &quot;POST&quot;) {
+        var uri = url.parse(request.url).pathname;
+        if (uri === &quot;/&lt;url1&gt;&quot;) {
+            collectData(request, function(data) {
+                var formData = querystring.parse(data); // parse the form variables posted with the request
+
+                console.log(&quot;firstName is &quot; + formData.firstname);
+                console.log(&quot;lastname is &quot; + formData.lastname);
+                console.log(&quot;email is &quot; + formData.email);
+            });
+        }
+        // ...
+    }
+});
+var port = 8080;
+server.listen(port);
+</code></pre>
+<p>We may want to respond with different types of data.  Perhaps you want to return JSON?  Maybe TEXT?  Or an image?  The <em>HTTP</em> standard defines a <code>&quot;content-type&quot;</code> header that can be set to tell the <em>client</em> what kind of data was returned.  You can see a complete <a href="http://www.freeformatter.com/mime-types-list.html">list of MIME types here</a>.  You can set this thus:</p>
+<pre><code>response.writeHead(status, { &quot;Content-Type&quot;: &quot;text/json&quot; });
+</code></pre><p>Sometimes when a client <em>requests</em> one URL, the <em>server</em> will respond by redirecting to another.  You can observe this readily.  Assuming curl is installed, type in the following command:</p>
+<p><code>curl -i http://google.com</code></p>
+<p>Observe the output.  It returns a status code indicating a redirect, and a URL to redirect to.  Now type in the the new URL:</p>
+<p><code>curl -i http://www.google.com</code> and you&#39;ll receive the desired output.</p>
+<p>Open the Chrome Web Browser, and type into the address bar: <code>http://google.com</code> and notice that the URL changes to something else before showing the web page.  In effect, the Web Browser detected the redirect and followed it automatically.</p>
+<p>We can write our own <em>server</em> redirect using the following code:</p>
+<pre><code class="lang-javascript">// ...
+sendRedirect(response, location, null);
+// ...
+function sendRedirect(response, location, status){
+  status = status || 302;
+  response.writeHead(status, {Location: location});
+  response.end();
+};
+</code></pre>
+<p>We often want to write content to the <em>response</em> that the client can use.  This can be <em>HTML</em>, JSON, image data, or anything else.  To write content to the <em>response</em>, simply write:</p>
+<p><code>response.write(content);</code></p>
+<p>You can write as many times as you wish.</p>
+<h5 id="exercises">Exercises</h5>
+<ul>
+<li>Create a basic <em>HTTP</em> server.  Try to recall it from memory, if possible.</li>
+<li>When using <code>response.end();</code>, what default status code will be used?</li>
+<li>Does <code>response.end();</code> exit the current function?</li>
+<li>Create a response that returns status 404 when an invalid URL is requested</li>
+<li>Visit <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes">Wikipedia HTTP status codes</a>.  What status code should be returned when:<ul>
+<li>Everything is successful/OK</li>
+<li>A method is used that the <em>Node app</em> is not prepared to process</li>
+<li>An invalid URL is requested</li>
+<li>Something bad happened</li>
+<li>Something was created</li>
+<li><em>Node app</em> encountered an internal error</li>
+</ul>
+</li>
+<li>Whey should we respond with an appropriate error for each of the GET, POST, unknown, etc. methods and also each URL within it?</li>
+<li>Sometimes <code>request.url</code> and <code>url.parse(request.url).pathName</code> will return the same value.  Will this always be the case?  Why or why not?</li>
+<li>using the <em>RESTful</em> architecture, should we submit a <em>request</em> BODY with a GET method?  Why or why not?</li>
+<li>When receiving data, will it always arrive in a single <code>chunk</code>?<ul>
+<li>What is the default chunk size?  How can it be changed?</li>
+</ul>
+</li>
+<li>Run the serversideconcepts.demo project as-is, observe the console log and form variables.  Note that those are the parsed key/value pairs.  Modify the example to show the raw form data.  Execute again.  Observe the output.<ul>
+<li>[optional]  Create an AJAX request on the client that POSTs JSON data instead, observe the difference and correctly parse it into a JSON object.</li>
+</ul>
+</li>
+<li>What <code>Content-type</code> indicates an image file (JPEG, or PNG, or GIF)?</li>
+<li>Write code that uses <code>response.write(content);</code> before writing a custom <em>response</em> header (such as a content-type).  What happens?<ul>
+<li>Visit <a href="https://nodejs.org/api/http.html#http_response_write_chunk_encoding_callback">response.write documentation</a> to understand why.</li>
+</ul>
+</li>
+</ul>
+<h2 id="processing-files-with-nodejs">Processing Files with NodeJS</h2>
+<p><strong>NodeJS</strong> includes another useful <strong>module</strong> called <code>&quot;fs&quot;</code> (which is short for File System).  Using it we can read and write files.  Reading and writing files is very slow.  <strong>NodeJS</strong> wants to appear to be very fast and responsive.  It is possible to read and write files both <strong>asynchrounously</strong> and <strong>synchronously</strong>.  As much as possible, we want to read and write files <strong>asynchronously</strong>.</p>
+<p>We can write a file <strong>asynchronously</strong> thus:</p>
+<pre><code class="lang-javascript">var fs = require(&quot;fs&quot;);
+var fileName = &quot;/desktop/file.txt&quot;;
+var content = &quot;99 glasses of margaritas on the wall.&quot;;
+fs.writeFile(fileName, content, function(err) {
+    // only when there&#39;s an error ...
+});
+</code></pre>
+<p>We can read a file <strong>asynchronously</strong> thus:</p>
+<pre><code class="lang-javascript">var fs = require(&quot;fs&quot;);
+var fileName = &quot;/desktop/file.txt&quot;;
+fs.readFile(fileName, function(err, data) {
+    if (err) {
+        // only when there&#39;s an error ...
+    }
+    else {
+        var content = data.toString();
+        // ...
+    }
+});
+</code></pre>
+<p><em>HTTP</em> URLs are different than file system paths.  The way you locate a resource via <em>HTTP</em> is not the same as you would on the local file system.  Sometimes we may need to convert a URL path to something equivalent on the local file system.  Suppose we have the following directory structure:</p>
+<pre><code>/root
+    /server
+        /web
+            index.html
+            about.html
+            contact.html
+            ...
+        ...
+    ...
+</code></pre><p>When the <em>client</em> requests the <em>HTTP</em> path (URL): <code>http://example.com/about.html</code> then the <em>server</em> has to somehow map the URL to the actual file.  The built in <code>path</code> <strong>package</strong> serves this purpose.</p>
+<pre><code class="lang-javascript">var http = require(&quot;http&quot;);
+var path = request(&quot;path&quot;);
+var url = require(&quot;url&quot;);
+var server = http.createServer(function(request, response) {
+    var uri = url.parse(request.url).pathname;
+    var filename = path.join(__dirname, &quot;./web/&quot; + uri);
+    // ...
+});
+var port = 8080;
+server.listen(port);
+</code></pre>
+<p>You&#39;ll notice the <code>__dirname</code> variable above.  It is a built-in global variable that <strong>NodeJS</strong> provides to gives the directory name of the currently executing script (*.js) file.  We can use that as a basis with which to form a valid file system path.  The above example assumes the script is running beneath the <code>/root/server/</code> directory listed before.  Any valid file path can be used, such as <code>../../../&lt;file&gt;</code> to change to a higher level directory, and so on.</p>
+<h5 id="exercises">Exercises</h5>
+<ul>
+<li>When reading a file, why does <code>data</code> have to be converted to a string?  Under what circumstances do you NOT want to convert it to a string?</li>
+<li>Create a response that returns an image file when the user browses to it.</li>
+<li>Write code that determines whether a directory exists and creates one if it does not.</li>
+</ul>
+<h2 id="dictionary">Dictionary</h2>
+<p><strong>Asynchronous</strong>: When an event happens in the background without blocking code until the event has completed, it is asynchronous.  This is said to be &quot;non-blocking&quot;.</p>
+<p><strong>Event</strong>: Something that happened.  For example, a file opened, a request was received, a user clicked a mouse.</p>
+<p><strong>Event-Driven</strong>: An architecture that is based on responding to <strong>events</strong>.</p>
+<p><strong>Express.js</strong>: A <strong>NodeJS</strong> <strong>package</strong> that makes it very easy to build <em>HTTP</em> servers.</p>
+<p><strong>HTML DOM</strong>: The structure of HTML content in a Web page.</p>
+<p><strong>Module</strong>: A single <em>.js file within <em>*NodeJS</em></em>.</p>
+<p><strong>NodeJS</strong>: A Javascript runtime based on Google <strong>V8</strong> that you can use to build different kinds of applications.</p>
+<p><strong>NPM</strong>: Node Package Manager.  The utility that manages <strong>NodeJS</strong> <strong>packages</strong> by creating, installing, and removing them.</p>
+<p><strong>Package</strong>: A collection of one or more reusable <strong>modules</strong> that a <em>Node app</em> can use to enhance its functionality.</p>
+<p><strong>REST</strong>: REpresentational State Transfer.  A set of guidelines based on a pure interpretation of the <em>HTTP</em> standard to make it easier to build server APIs that are consumable by any client library that understand how to work with <em>HTTP</em>.</p>
+<p><strong>Synchronous</strong>: When an event must complete before the next line of code can continue.  This is said to be &quot;blocking&quot;.</p>
+<p><strong>V8</strong>: The Javascript interpreter that Chrome and <strong>NodeJS</strong> uses.  It is very fast becasue it compiles Javascript code before executing it.</p>
+<p><strong>Web Brower</strong>: The softare that a user uses to visit different Web pages.  From a programming perspective, it can also be the set of fuctions that make <em>HTTP</em> <em>requests</em> (such as AJAX calls) and <em>responses</em>.  While know one would confuse an AJAX call with a Web Browser, its effect is the same.</p>
+<p><strong>Web Server</strong>: the software that handles <em>HTTP</em> <em>requests</em> and <em>responses</em>.</p>
+
+		</div>
+
+		<script></script>
+	</body>
+</html>

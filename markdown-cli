@@ -1,0 +1,2 @@
+npm install -g markdown-html
+markdown-html readme.md -o readme.html
